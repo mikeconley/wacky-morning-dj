@@ -1,12 +1,20 @@
 {
-  "name": "soundboard",
+  "name": "wacky-morning-dj",
   "version": "0.0.1",
-  "description": "A Node.js soundboard that can be controlled by a mobile device.",
-  "main": "bin/server.js",
-  "author": "Mike Conley",
-  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
   "dependencies": {
     "swig": "~1.4.2",
-    "sfx": "~0.1.1"
+    "sfx": "~0.1.1",
+    "body-parser": "~1.12.0",
+    "cookie-parser": "~1.3.4",
+    "debug": "~2.1.1",
+    "express": "~4.12.2",
+    "jade": "~1.9.2",
+    "morgan": "~1.5.1",
+    "serve-favicon": "~2.2.0",
+    "ws": "~0.7.1"
   }
 }
