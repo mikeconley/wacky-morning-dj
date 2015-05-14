@@ -2,7 +2,7 @@
   "name": "soundboard",
   "version": "0.0.1",
   "description": "A Node.js soundboard that can be controlled by a mobile device.",
-  "main": "server.js",
+  "main": "bin/server.js",
   "author": "Mike Conley",
   "license": "MIT",
   "dependencies": {
