@@ -1,0 +1,15 @@
+section {
+  display: inline-block;
+  min-width: 320px;
+  max-width: 500px;
+}
+
+button {
+  min-height: 80px;
+}
+
+@media only screen and (max-width: 500px) {
+  h1 {
+    font-size: 1.5em;
+  }
+}

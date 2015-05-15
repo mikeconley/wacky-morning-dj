@@ -5,14 +5,52 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('soundboard:server');
+var debug = require('debug')('wacky-morning-dj:server');
 var http = require('http');
+var fs = require('fs');
+var path = require('path');
+var sfx = require('sfx');
+
+var config = JSON.parse(fs.readFileSync('config.json', encoding="ascii"));
+console.log(config);
+var soundSettings = JSON.parse(fs.readFileSync('sounds.json', encoding="ascii"));
+var manifests = makeManifests(soundSettings);
+var clientManifest = manifests[0];
+var serverManifest = manifests[1];
+
+function makeManifests(settings) {
+  // Take our JSON, and turn it into two lists - one is for the
+  // client, and has sections of names, mapped to IDs. For the
+  // server, we map those IDs to the filenames.
+  // TODO: Explain this better.
+  var serverManifest = {};
+  var clientManifest = {};
+  var currentID = 0;
+  for (var groupName in settings) {
+    var group = settings[groupName];
+    if(!clientManifest[group]) {
+      clientManifest[groupName] = {};
+    }
+    for (var title in group) {
+      var filename = group[title];
+      serverManifest[currentID] = filename;
+      clientManifest[groupName][title] = currentID;
+      currentID++;
+    }
+  }
+
+  console.log("Client manifest:");
+  console.log(clientManifest);
+  console.log("Server manifest:");
+  console.log(serverManifest);
+  return [clientManifest, serverManifest];
+}
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(config.serverPort);
 app.set('port', port);
 
 /**
@@ -28,6 +66,20 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+var WebSocketServer = require('ws').Server
+  , wss = new WebSocketServer({ port: config.webSocketPort });
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(message) {
+    console.log('received request to play %s', serverManifest[message]);
+    var abspath = path.join(process.cwd(), serverManifest[message]);
+    console.log('playing %s', abspath);
+    sfx.play(abspath);
+  });
+
+  ws.send(JSON.stringify(clientManifest));
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -86,5 +138,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }
