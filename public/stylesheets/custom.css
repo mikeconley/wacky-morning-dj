@@ -1,3 +1,13 @@
+body {
+  margin-inline: auto;
+  width: 1400px;
+}
+
+#container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 section {
   display: inline-block;
   min-width: 320px;
@@ -11,5 +21,11 @@ button {
 @media only screen and (max-width: 500px) {
   h1 {
     font-size: 1.5em;
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  section {
+    margin-left: 10px;
   }
 }
